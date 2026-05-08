@@ -18,4 +18,7 @@ This is the place to document problems worth solving — even if you don't know 
 
 | Item | Description | Status |
 |---|---|---|
-| _(none yet — add one!)_ | | |
+| [auto-close-milestones-vs-actuals.md](auto-close-milestones-vs-actuals.md) | Compare On Track milestone estimates vs ACR actuals, report or auto-close when met | Ahmed Bham |
+| [pull-acr-actuals.md](pull-acr-actuals.md) | Pull ACR actuals via Clawpilot browser control — eliminate manual report pulling | Jolie Delcambre |
+| [add-deal-team-update-msx-milestones.md](add-deal-team-update-msx-milestones.md) | Add deal team members and update MSX milestone fields via Clawpilot (works in CLI today) | Jolie Delcambre |
+| [scheduled-msx-milestone-briefing.md](scheduled-msx-milestone-briefing.md) | Scheduled automation that proactively briefs you on new/overdue/committed milestones | Quinn Meagher, Benjamin Coughtry |

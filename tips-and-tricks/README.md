@@ -16,4 +16,8 @@ Add a `.md` file to this folder with a clear, descriptive name (e.g., `be-specif
 
 | Tip | Summary |
 |---|---|
-| _(none yet — add one!)_ | |
+| [getting-started-installation.md](getting-started-installation.md) | How to request access and install Clawpilot |
+| [add-clawpilot-to-teams.md](add-clawpilot-to-teams.md) | Add Clawpilot as a Teams app — works on mobile too |
+| [permissions-troubleshooting.md](permissions-troubleshooting.md) | Hit a permissions error? Check settings first |
+| [verify-outputs.md](verify-outputs.md) | Always spot-check names, files, and results — hallucinations happen |
+| [email-reply-safety.md](email-reply-safety.md) | Test email replies on yourself before using on real recipients |
