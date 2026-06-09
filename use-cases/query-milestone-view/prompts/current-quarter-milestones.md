@@ -46,5 +46,5 @@ Order by milestone date ascending.
 
 - Replace `[ALL | or specify: ...]` with your desired commitment filter, or remove the commitment condition entirely to get all milestones
 - The TPID lookup requires an extra query per unique account — for large portfolios this may take a moment
-- To also include milestones from past periods that are still active (not completed/cancelled), add a second filter group: `msp_milestonestatus in (On Track, At Risk, Blocked) AND msp_milestonedate in last 4 fiscal periods` — this mirrors the "JDelcambre Milestones This Q" saved view logic
+- To also include milestones from past periods that are still active (not completed/cancelled), add a second filter group: `msp_milestonestatus in (On Track, At Risk, Blocked) AND msp_milestonedate in last 4 fiscal periods` — this mirrors a typical "My Milestones This Q" saved view logic
 - Formatted values from OData (e.g., `@OData.Community.Display.V1.FormattedValue`) give human-readable labels for status, workload, commitment, etc.

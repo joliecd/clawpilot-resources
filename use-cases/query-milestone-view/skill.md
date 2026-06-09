@@ -1,11 +1,11 @@
 ---
 status: draft
 skill-name: query-milestone-view
-owner: jdelcambre
+owner: 
 tags: [msx, milestones, crm, forecast, portfolio]
 created: 2026-06-09
 last-updated: 2026-06-09
-notes: Based on the "JDelcambre Milestones This Q" personal view in MSX. Uses CRM OData queries to replicate the FetchXML view logic.
+notes: Based on personal saved milestone views in MSX. Uses CRM OData queries to replicate the FetchXML view logic.
 ---
 
 # Skill Notes

@@ -17,7 +17,7 @@ Steps:
 
 3. Look for the view selector dropdown (usually near the top of the grid). Click it and switch to my saved view: "[VIEW_NAME]"
    - If you can't find the view, look for "My Views" or "Personal Views" in the dropdown
-   - Common view names: "JDelcambre Milestones This Q", "JDelcambre Milestones This FY"
+   - Common view names: "[YourAlias] Milestones This Q", "[YourAlias] Milestones This FY"
 
 4. Wait for the grid to reload with the filtered view.
 
@@ -43,7 +43,7 @@ If MSX requires authentication, pause and let me log in via the browser before c
 
 ## Notes
 
-- Replace `[VIEW_NAME]` with your actual saved view name (e.g., "JDelcambre Milestones This Q")
+- Replace `[VIEW_NAME]` with your actual saved view name (e.g., "[YourAlias] Milestones This Q")
 - Browser automation is slower (~30-60 seconds) and more fragile than the MCP approach
 - The MSX grid may not show all columns by default — you may need to tell Clawpilot to scroll right or look for hidden columns
 - If the grid truncates milestone names, Clawpilot can click into individual rows for full details
