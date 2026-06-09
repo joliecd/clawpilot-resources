@@ -54,17 +54,43 @@ Or create/edit `~/.npmrc` and add:
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT_HERE
 ```
 
-3. Verify it works by running:
+3. Verify the package is accessible by running:
 
 ```bash
-npx -y @microsoft/msx-mcp-server@latest --help
+npm view @microsoft/msx-mcp-server version
 ```
 
-If this errors with `404 Not Found` or `ENEEDAUTH`, the token or scope is misconfigured.
+This should return a version number (e.g., `0.5.1`) in a few seconds. **Do not** use `npx ... --help` to test — the server is a stdio MCP process that blocks waiting for input and will hang indefinitely.
+
+> **Already have a GitHub PAT for another `@scope`?** If `~/.npmrc` already has `//npm.pkg.github.com/:_authToken=...` for any scope, you **don't need a new PAT** — just add the `@microsoft:registry` line. The auth token is registry-scoped, not package-scoped. Run `npm whoami --registry=https://npm.pkg.github.com` to confirm you're already authenticated.
 
 #### Step 2: Add to Clawpilot MCP config
 
-In your Clawpilot MCP settings (e.g., `~/.copilot/m-mcp-servers.json` or VS Code `mcp.json`), add:
+**For Clawpilot** (`~/.copilot/m-mcp-servers.json`), add the `msx` entry inside the existing `"servers"` object:
+
+```json
+{
+  "servers": {
+    "msx": {
+      "builtin": false,
+      "config": {
+        "name": "MSX CRM",
+        "type": "command",
+        "command": "npx",
+        "args": ["-y", "@microsoft/msx-mcp-server@latest"],
+        "env": {
+          "npm_config_@microsoft:registry": "https://npm.pkg.github.com"
+        }
+      },
+      "tools": []
+    }
+  }
+}
+```
+
+> **Important:** Clawpilot's `m-mcp-servers.json` uses a `"servers"` wrapper with `"builtin"`, `"config"`, and `"tools"` per server — the format differs from generic MCP JSON (`"type": "stdio"`). The `env` block is required even if your `.npmrc` is configured; it ensures Clawpilot uses GitHub's registry when launching the process.
+
+**For VS Code `mcp.json`**, use the simpler format:
 
 ```json
 {
@@ -78,8 +104,6 @@ In your Clawpilot MCP settings (e.g., `~/.copilot/m-mcp-servers.json` or VS Code
   }
 }
 ```
-
-> **Important:** The `env` block tells npx to look up `@microsoft/*` packages on GitHub's registry instead of npmjs.com. Without it, npx will try npmjs.com and fail with a 404.
 
 #### Step 3: Restart and verify
 
@@ -149,3 +173,5 @@ This approach navigates to the MSX web UI, opens your saved milestone view, and 
 - **Workload field** — Use `_msp_workloadlkid_value` (lookup), not `msp_workloadlkid` (will error).
 - **Recurring** — The `msp_nonrecurring` field indicates whether revenue is non-recurring. If `null` or `false`, the milestone is recurring; if `true`, it is non-recurring.
 - **TPID / Account** — The opportunity links to the parent account. To get TPID, you need the account's `msp_tpid` field. Clawpilot can resolve this by reading the opportunity's `parentaccountid` and then querying the account.
+
+For detailed setup troubleshooting (hanging npx, 404 errors, .npmrc formatting, config format differences), see [troubleshooting.md](troubleshooting.md).
