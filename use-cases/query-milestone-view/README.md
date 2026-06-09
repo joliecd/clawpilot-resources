@@ -15,12 +15,44 @@ CSAs need to quickly review their milestone portfolio for the current quarter �
 - Building a quick report of milestone dates, $, and statuses for a manager or team sync
 - Verifying milestone hygiene before MOP or forecast calls
 
-## Prerequisites
+## Two Approaches
 
-- **MSX CRM MCP Server** (`msx-crm`) — must be connected. This provides all the CRM query tools used below.
-- Clawpilot must be authenticated to Dynamics 365 (verify with `crm_auth_status` or `crm_whoami`).
+This use case supports two paths. **Option A (MCP) is recommended** — it's faster, more reliable, and supports write operations. Option B (Browser) works without additional setup.
 
-### Required Tools (from `msx-crm` MCP)
+| | Option A: MCP Server (Recommended) | Option B: Browser Automation |
+|---|---|---|
+| **Speed** | ~2-5 seconds (direct API) | ~30-60 seconds (page loads, rendering) |
+| **Reliability** | Structured JSON, exact fields | Fragile — UI changes can break selectors |
+| **Write support** | Yes (update dates, status, comments) | Possible but error-prone |
+| **Setup** | One-time MCP server install | None — uses Playwright (built-in) |
+| **Filtering** | Precise OData filters, any field | Limited to saved views in the UI |
+
+---
+
+### Option A: MSX CRM MCP Server (Recommended)
+
+**One-time setup:** Add the MSX MCP server to Clawpilot's MCP configuration.
+
+In your Clawpilot MCP settings (e.g., `~/.copilot/m-mcp-servers.json` or VS Code `mcp.json`), add:
+
+```json
+{
+  "msx": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@microsoft/msx-mcp-server@latest"],
+    "env": {
+      "npm_config_@microsoft:registry": "https://npm.pkg.github.com"
+    }
+  }
+}
+```
+
+> **Note:** This package is on the GitHub npm registry (`npm.pkg.github.com`). You may need to authenticate with `npm login --registry=https://npm.pkg.github.com` using a GitHub PAT with `read:packages` scope if you haven't already.
+
+After adding, restart Clawpilot and verify with `crm_whoami`.
+
+#### Required Tools (from `msx-crm` MCP)
 
 | Tool | Purpose |
 |---|---|
@@ -29,14 +61,14 @@ CSAs need to quickly review their milestone portfolio for the current quarter �
 | `crm_get_record` | Fetch a single record (e.g., account by ID to get TPID) |
 | `get_milestones` | Composite tool — can scope by customer, opportunity, or owner. Supports `mine=true` for your milestones |
 
-### Optional Tools
+#### Optional Tools
 
 | Tool | Purpose |
 |---|---|
 | `update_milestone` | Update milestone date, status, commitment, or forecast comments |
 | `get_milestone_activities` | List tasks linked to milestones |
 
-## How to Use
+#### How to Use (MCP)
 
 1. Open Clawpilot
 2. Ensure the **MSX CRM MCP server** is connected (check with `crm_whoami`)
@@ -44,12 +76,37 @@ CSAs need to quickly review their milestone portfolio for the current quarter �
 4. Adjust `[BRACKETED PLACEHOLDERS]` for your context (e.g., commitment filter, quarter)
 5. Run it — Clawpilot will query CRM via OData and return a formatted table
 
+---
+
+### Option B: Browser Automation (Fallback)
+
+**No setup required** — uses Clawpilot's built-in Playwright browser tools.
+
+This approach navigates to the MSX web UI, opens your saved milestone view, and scrapes the table data. It's slower and less precise but works without any MCP server configuration.
+
+#### Required Tools (built-in)
+
+| Tool | Purpose |
+|---|---|
+| `browser_navigate` | Open the MSX milestone grid |
+| `browser_snapshot` | Read page content and find UI elements |
+| `browser_click` | Switch views, interact with filters |
+| `browser_take_screenshot` | Visual verification |
+
+#### How to Use (Browser)
+
+1. Open Clawpilot
+2. Use the browser prompt from `prompts/browser-milestone-view.md`
+3. Clawpilot will navigate to MSX, open your saved view, and scrape the results
+4. Results may need manual verification — browser scraping can miss columns or truncate data
+
 ## Available Prompts
 
-| Prompt | Best for |
-|---|---|
-| [current-quarter-milestones.md](prompts/current-quarter-milestones.md) | Full milestone view for current fiscal quarter with all key fields |
-| [committed-on-track.md](prompts/committed-on-track.md) | Quick filter to committed + On Track milestones only |
+| Prompt | Best for | Approach |
+|---|---|---|
+| [current-quarter-milestones.md](prompts/current-quarter-milestones.md) | Full milestone view for current fiscal quarter with all key fields | MCP |
+| [committed-on-track.md](prompts/committed-on-track.md) | Quick filter to committed + On Track milestones only | MCP |
+| [browser-milestone-view.md](prompts/browser-milestone-view.md) | Same data via browser when MCP is not available | Browser |
 
 ## Tips & Gotchas
 
