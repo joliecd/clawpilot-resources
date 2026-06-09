@@ -33,6 +33,37 @@ This use case supports two paths. **Option A (MCP) is recommended** — it's fas
 
 **One-time setup:** Add the MSX MCP server to Clawpilot's MCP configuration.
 
+#### Step 1: Authenticate with GitHub Package Registry
+
+The `@microsoft/msx-mcp-server` package is hosted on **GitHub's npm registry** (`npm.pkg.github.com`), **not** the public npmjs.com registry. You must authenticate before `npx` can pull it.
+
+1. Create a GitHub Personal Access Token (PAT) with `read:packages` scope at https://github.com/settings/tokens
+2. Run this in your terminal to configure npm for the `@microsoft` scope:
+
+```bash
+npm login --registry=https://npm.pkg.github.com --scope=@microsoft
+# Username: your GitHub username
+# Password: paste your PAT (not your GitHub password)
+# Email: your email
+```
+
+Or create/edit `~/.npmrc` and add:
+
+```
+@microsoft:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT_HERE
+```
+
+3. Verify it works by running:
+
+```bash
+npx -y @microsoft/msx-mcp-server@latest --help
+```
+
+If this errors with `404 Not Found` or `ENEEDAUTH`, the token or scope is misconfigured.
+
+#### Step 2: Add to Clawpilot MCP config
+
 In your Clawpilot MCP settings (e.g., `~/.copilot/m-mcp-servers.json` or VS Code `mcp.json`), add:
 
 ```json
@@ -48,9 +79,11 @@ In your Clawpilot MCP settings (e.g., `~/.copilot/m-mcp-servers.json` or VS Code
 }
 ```
 
-> **Note:** This package is on the GitHub npm registry (`npm.pkg.github.com`). You may need to authenticate with `npm login --registry=https://npm.pkg.github.com` using a GitHub PAT with `read:packages` scope if you haven't already.
+> **Important:** The `env` block tells npx to look up `@microsoft/*` packages on GitHub's registry instead of npmjs.com. Without it, npx will try npmjs.com and fail with a 404.
 
-After adding, restart Clawpilot and verify with `crm_whoami`.
+#### Step 3: Restart and verify
+
+Restart Clawpilot, then verify with `crm_whoami`. If it returns your CRM user ID, you're connected.
 
 #### Required Tools (from `msx-crm` MCP)
 
